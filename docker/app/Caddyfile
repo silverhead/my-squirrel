@@ -1,0 +1,25 @@
+{
+    # Activer FrankenPHP
+    # frankenphp
+    frankenphp {
+        {$FRANKENPHP_CONFIG}
+    }
+
+    order php_server before file_server
+}
+
+{$SERVER_NAME:localhost} {
+
+    #root * /app/public
+
+    # Activer la compression (optionnel)
+    encode zstd br gzip
+    # Exécuter les fichiers PHP dans le répertoire courant et servir les assets
+    #php_server
+    #    resolve_root_symlink
+    route {
+        root * public/
+
+        php_server
+    }
+}    

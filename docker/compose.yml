@@ -1,0 +1,63 @@
+name: ${PROJECT_NAME}-${APP_ENV}
+
+services:
+  app:
+    image: ${PROJECT_NAME}-${APP_ENV}-app:${PROJECT_VERSION}
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: app/Dockerfile
+      target: ${APP_ENV}
+      args:
+          USER_NAME: ${USER_NAME}
+          USER_ID: ${USER_ID}
+          GROUP_ID: ${GROUP_ID}
+    ports:
+      - ${APP_HTTP_PORT}:80
+    environment:
+      SERVER_NAME: ${SERVER_NAME}:80
+    volumes:
+      - ../${APP_DIR}/:/${APP_DIR}/
+      - caddy_data:/data
+      - caddy_config:/config
+    links:
+    - db
+    depends_on:
+      - db
+    networks:
+      - network
+  db:
+    image: mariadb:11.5.2
+    restart: unless-stopped
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASS}
+      MARIADB_DATABASE: ${DB_NAME}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_USER_PASS}
+    ports:
+      - ${DB_PORT}:3306
+    networks:
+      - network
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    links:
+    - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 1
+      UPLOAD_LIMIT: 300M
+      restart: 'no'
+    ports:
+      - 8081:80
+    networks:
+      - network
+networks:
+  network:
+volumes:
+  caddy_data:
+  caddy_config:
+  db_data: null
+
