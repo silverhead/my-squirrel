@@ -10,8 +10,8 @@ CONTAINER_APP = mysquirrel-${APP_ENV}-app-1
 DOCKER_COMPOSE = docker compose
 DOCKER_EXEC = docker exec -it
 DOCKER_EXEC_APP = ${DOCKER_EXEC} $(CONTAINER_APP)
-CONSOLE = php bin/console
-BIN_VENDOR = php vendor/bin/
+CONSOLE = bin/console
+BIN_VENDOR = vendor/bin
 
 COMPOSE_ARGS = -f $(DOCKER_PATH)/compose.yml
 ENV_ARGS = --env-file $(DOCKER_PATH)/.env
@@ -46,49 +46,37 @@ docker-exec-app:## docker exec app
 .PHONY: docker-exec-app
 
 composer:
-	$(DOCKER_EXEC) composer
+	$(DOCKER_EXEC_APP) composer
 .PHONY: composer
 
 composer-install:
-	$(DOCKER_EXEC) composer install
+	$(DOCKER_EXEC_APP) composer install
 .PHONY: composer
 
-server-start: ## launch server
-	$(DOCKER_EXEC) symfony serve:start -d
-.PHONY: server-start
+console-doctrine-migrations-migrate: ## apply migration
+	$(DOCKER_EXEC_APP) $(CONSOLE) d:m:m
+.PHONY: console-doctrine-migrations-migrate
 
-server-stop: ## stop server
-	$(DOCKER_EXEC) symfony serve:stop
-.PHONY: server-stop
+console-doctrine-migrations-migrate-prev: ## rollback migration
+	$(DOCKER_EXEC_APP) $(CONSOLE) d:m:m prev
+.PHONY: console-doctrine-migrations-migrate-prev
 
-dmm: ## apply migration
-	$(DOCKER_EXEC) $(CONSOLE) d:m:m
-.PHONY: dmm
-
-dmmprev: ## rollback migration
-	$(DOCKER_EXEC) $(CONSOLE) d:m:m prev
-.PHONY: dmmprev
-
-migrate: ## create migration file
-	$(DOCKER_EXEC) $(CONSOLE) make:migration
-.PHONY: migrate
-
-entity: ## create migration file
-	$(DOCKER_EXEC) $(CONSOLE) make:migration
-.PHONY: database-update
+console-make-migrate: ## create migration file
+	$(DOCKER_EXEC_APP) $(CONSOLE) make:migration
+.PHONY: console-make-migrate
 
 cache-clear: ## cache clear
-	$(DOCKER_EXEC) $(CONSOLE) cache:clear
+	$(DOCKER_EXEC_APP) $(CONSOLE) cache:clear
 .PHONY: cache-clear
 
-phpcsf: ## php cs fixer
-	$(DOCKER_EXEC) $(BIN_VENDOR)php-cs-fixer
-.PHONY: phpcsf
+php-cs-fixer-dry: ## php cs fixer dry-run
+	$(DOCKER_EXEC_APP) tools/php-cs-fixer/$(BIN_VENDOR)/php-cs-fixer fix src --dry-run
+.PHONY: php-cs-fixer-dry
 
 phpstan: ## phpstan
-	$(DOCKER_EXEC) $(BIN_VENDOR)phpstan
+	$(DOCKER_EXEC_APP) $(BIN_VENDOR)/phpstan analyse
 .PHONY: phpstan
 
 phpunit: ## phpunit
-	$(DOCKER_EXEC) $(BIN_VENDOR)phpunit
+	$(DOCKER_EXEC_APP) $(BIN_VENDOR)/phpunit
 .PHONY: phpunit
