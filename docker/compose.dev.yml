@@ -25,33 +25,40 @@ services:
     networks:
       - network
   mailer:
-    image: schickling/mailcatcher
-    ports: ["1025", "1080"]
+    image: axllent/mailpit
+    ports:
+      - "1025"
+      - "8025"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.${PROJECT_NAME}-mailer.rule=Host(`${PROJECT_NAME}-mailer.localhost`)"
       - "traefik.http.routers.${PROJECT_NAME}-mailer.entrypoints=http"
-      - "traefik.http.services.${PROJECT_NAME}-mailer.loadbalancer.server.port=1080"
+      - "traefik.http.services.${PROJECT_NAME}-mailer.loadbalancer.server.port=8025"
     depends_on:
       - traefik
-      - db
     networks:
       - network
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    volumes:
+      - mailer-data:/data
   traefik:
     image: traefik:v3.0
     restart: unless-stopped
-    # command: --api.insecure=true --providers.docker
     command:
       - "--log.level=DEBUG"
       - "--api.insecure=true"
       - "--providers.docker=true"
-      # - "--providers.docker.exposedbydefault=false"
-      # - "--entrypoints.web.address=:80"
     ports:
       - "80:80"
-      # - "443:443"
       - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - network
+volumes:
+  caddy_data:
+  caddy_config:
+  db_data: null
+  mailer-data: null

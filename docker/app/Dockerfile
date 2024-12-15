@@ -1,5 +1,5 @@
 # Alpine configuration for use Caddy with Symfony
-FROM dunglas/frankenphp:1-builder-php8.4-alpine as builder
+FROM dunglas/frankenphp:1-builder-php8.4-alpine AS builder
 
 # Copy xcaddy in the builder image
 COPY --from=caddy:builder /usr/bin/xcaddy /usr/bin/xcaddy
@@ -26,8 +26,7 @@ FROM upstream AS base
 
 ARG GROUP_NAME=www-data
 ARG USER_NAME=www-data
-ARG USER=www-data
-ARG USER_ID
+ARG USER_ID=1000
 ARG GROUP_ID
 
 WORKDIR /app
@@ -42,12 +41,15 @@ COPY --link app/Caddyfile /etc/caddy/Caddyfile
 
 # Alpine rights
 RUN \
-	# Utilisez "adduser -D ${USER}" pour les distributions basées sur Alpine
-	useradd -D ${USER}; \
+	# Utilisez "adduser -D ${USER_NAME}" pour les distributions basées sur Alpine
+	# useradd -D ${USER_NAME}; \
+	adduser -D ${USER_NAME} -u ${USER_ID} -G ${GROUP_NAME}; \
+	addgroup ${USER_NAME} ${GROUP_NAME}; \
 	# Ajouter la capacité supplémentaire de se lier aux ports 80 et 443
 	setcap CAP_NET_BIND_SERVICE=+eip /usr/local/bin/frankenphp; \
 	# Donner l'accès en écriture à /data/caddy et /config/caddy
-	chown -R ${USER}:${USER} /data/caddy && chown -R ${USER}:${USER} /config/caddy
+	# chown -R ${USER_NAME}:${USER_NAME} /data/caddy && chown -R ${USER_NAME}:${USER_NAME} /config/caddy
+	chown -R ${USER_NAME}:${GROUP_NAME} /data/caddy && chown -R ${USER_NAME}:${GROUP_NAME} /config/caddy
 
 # Debian extensions
 # RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -59,7 +61,7 @@ RUN \
 # 	&& rm -rf /var/lib/apt/lists/*
 
 # Alpine extensions
-RUN apk update && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS git && apk del -f .build-deps
+RUN apk update && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS git && apk add --no-cache git && apk del -f .build-deps
 
 # ajoutez des extensions supplémentaires ici :
 RUN set -eux; \
@@ -85,11 +87,11 @@ RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS && apk add --update li
 # Configure Xdebug
 RUN echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/xdebug.ini \
-    && echo "xdebug.log=/var/www/html/xdebug/xdebug.log" >> /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.log=/app/var/log/xdebug.log" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.discover_client_host=1" >> /usr/local/etc/php/conf.d/xdebug.ini \
     && echo "xdebug.client_port=9000" >> /usr/local/etc/php/conf.d/xdebug.ini
 
-USER ${USER}
+USER ${USER_NAME}
 
 CMD [ "frankenphp", "run", "--config", "/etc/caddy/Caddyfile", "--watch" ]
 
@@ -100,6 +102,6 @@ COPY --link app/worker.Caddyfile /etc/caddy/worker.Caddyfile
 ENV APP_ENV=prod
 ENV FRANKENPHP_CONFIG="import worker.Caddyfile"
 
-USER ${USER}
+USER ${USER_NAME}
 
 CMD [ "frankenphp", "run", "--config", "/etc/caddy/Caddyfile" ]

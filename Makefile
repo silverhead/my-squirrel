@@ -17,8 +17,8 @@ COMPOSE_ARGS = -f $(DOCKER_PATH)/compose.yml
 ENV_ARGS = --env-file $(DOCKER_PATH)/.env
 
 ifeq ($(APP_ENV),dev)
-COMPOSE_ARGS = -f $(DOCKER_PATH)/compose.yml -f $(DOCKER_PATH)/compose.dev.yml
-ENV_ARGS = --env-file=$(DOCKER_PATH)/.env --env-file=$(DOCKER_PATH)/.env.dev
+	COMPOSE_ARGS = -f $(DOCKER_PATH)/compose.yml -f $(DOCKER_PATH)/compose.dev.yml
+	ENV_ARGS = --env-file=$(DOCKER_PATH)/.env --env-file=$(DOCKER_PATH)/.env.dev
 endif
 
 help: ## Show this help.
@@ -42,7 +42,7 @@ docker-down:## docker down
 .PHONY: docker-down
 
 docker-exec-app:## docker exec app
-	$(DOCKER_EXEC_APP) bash
+	$(DOCKER_EXEC_APP) /bin/sh
 .PHONY: docker-exec-app
 
 composer:
