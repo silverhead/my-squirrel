@@ -18,8 +18,9 @@ ENV_ARGS = --env-file $(DOCKER_PATH)/.env
 
 ifeq ($(APP_ENV),dev)
 	COMPOSE_ARGS = -f $(DOCKER_PATH)/compose.yml -f $(DOCKER_PATH)/compose.dev.yml
-	ENV_ARGS = --env-file=$(DOCKER_PATH)/.env --env-file=$(DOCKER_PATH)/.env.dev
 endif
+
+ENV_ARGS = --env-file=$(DOCKER_PATH)/.env --env-file=$(DOCKER_PATH)/.env.${APP_ENV}
 
 help: ## Show this help.
 	@echo "Symfony-And-Docker-Makefile"

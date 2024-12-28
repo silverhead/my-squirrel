@@ -28,8 +28,9 @@ ARG GROUP_NAME=www-data
 ARG USER_NAME=www-data
 ARG USER_ID=1000
 ARG GROUP_ID
+ARG APP_DIR=/app
 
-WORKDIR /app
+WORKDIR /${APP_DIR}
 
 COPY --link app/Caddyfile /etc/caddy/Caddyfile
 
