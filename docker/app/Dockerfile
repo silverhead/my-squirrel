@@ -1,5 +1,5 @@
 # Alpine configuration for use Caddy with Symfony
-FROM dunglas/frankenphp:1-builder-php8.4-alpine AS builder
+FROM dunglas/frankenphp:1.4-builder-php8.4-alpine AS builder
 
 # Copy xcaddy in the builder image
 COPY --from=caddy:builder /usr/bin/xcaddy /usr/bin/xcaddy
@@ -94,13 +94,17 @@ RUN echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/xdebug.ini
 
 USER ${USER_NAME}
 
-CMD [ "frankenphp", "run", "--config", "/etc/caddy/Caddyfile", "--watch" ]
+ENV WORKER_WATCH="watch"
+COPY --link app/worker.dev.Caddyfile /etc/caddy/worker.Caddyfile
+ENV FRANKENPHP_CONFIG="import worker.Caddyfile"
+
+CMD [ "frankenphp", "run", "--config", "/etc/caddy/Caddyfile" ]
 
 FROM base AS prod
 
-COPY --link app/worker.Caddyfile /etc/caddy/worker.Caddyfile
-
 ENV APP_ENV=prod
+ENV WORKER_WATCH=""
+COPY --link app/worker.prod.Caddyfile /etc/caddy/worker.Caddyfile
 ENV FRANKENPHP_CONFIG="import worker.Caddyfile"
 
 USER ${USER_NAME}
