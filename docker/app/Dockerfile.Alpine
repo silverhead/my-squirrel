@@ -1,5 +1,5 @@
 # Alpine configuration for use Caddy with Symfony
-FROM dunglas/frankenphp:1.4-builder-php8.4-alpine AS builder
+FROM dunglas/frankenphp:1.4-builder-php8.3-alpine AS builder
 
 # Copy xcaddy in the builder image
 COPY --from=caddy:builder /usr/bin/xcaddy /usr/bin/xcaddy
@@ -16,11 +16,8 @@ RUN xcaddy build \
 	--with github.com/dunglas/vulcain/caddy
 	# Add extra Caddy modules here
 
-# Debian source
-# FROM dunglas/frankenphp:1-php8.4 AS upstream
-
 # Alpine source
-FROM dunglas/frankenphp:1-php8.4-alpine AS upstream
+FROM dunglas/frankenphp:1.4-builder-php8.3-alpine AS upstream
 
 FROM upstream AS base
 

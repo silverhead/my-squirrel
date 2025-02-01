@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     build:
       context: .
-      dockerfile: app/Dockerfile
+      dockerfile: app/Dockerfile.Debian
       target: ${APP_ENV}
       args:
           USER_NAME: ${USER_NAME}
