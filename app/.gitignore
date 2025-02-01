@@ -26,6 +26,7 @@
 
 ###> php-cs-fixer ###
 /tools/php-cs-fixer/vendor/
+.php-cs-fixer.cache
 ###< php-cs-fixer ###
 ###> phpstan/phpstan ###
 phpstan.neon
