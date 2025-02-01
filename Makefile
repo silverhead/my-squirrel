@@ -48,7 +48,7 @@ docker-down:## docker down
 .PHONY: docker-down
 
 docker-exec-app:## docker exec app
-	$(DOCKER_EXEC_APP) /bin/sh
+	$(DOCKER_EXEC_APP) bash
 .PHONY: docker-exec-app
 
 ##@ Composer commands
