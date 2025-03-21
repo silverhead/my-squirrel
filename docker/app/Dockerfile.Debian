@@ -1,5 +1,5 @@
 # Debian configuration for use Caddy with Symfony
-FROM dunglas/frankenphp:1.4-builder-php8.3 AS builder
+FROM dunglas/frankenphp:1-builder-php8.3 AS builder
 
 # Copy xcaddy in the builder image
 COPY --from=caddy:builder /usr/bin/xcaddy /usr/bin/xcaddy
@@ -77,8 +77,8 @@ RUN echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/xdebug.ini
 USER ${USER_NAME}
 
 
-COPY --link app/worker.dev.Caddyfile /etc/caddy/worker.Caddyfile
-ENV FRANKENPHP_CONFIG="import worker.Caddyfile"
+# COPY --link app/worker.dev.Caddyfile /etc/caddy/worker.Caddyfile
+# ENV FRANKENPHP_CONFIG="import worker.Caddyfile"
 
 CMD [ "frankenphp", "run", "--config", "/etc/caddy/Caddyfile" ]
 
