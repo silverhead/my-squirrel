@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html data-theme="nord">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Welcome!{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        {% block stylesheets %}
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+        {% endblock %}
+
+        {% block javascripts %}
+            {% block importmap %}{{ importmap('app') }}{% endblock %}
+        {% endblock %}
+    </head>
+    <body>
+        <!-- Navbar -->
+        <div class="navbar bg-base-100 shadow-lg">
+            <div class="flex-1">
+                {# {{ path('app_bank_dashboard') }} #}
+                <a href="" class="btn btn-ghost text-xl">MySquirrel</a>
+            </div>
+            <div class="flex flex-row justify-between">
+                <ul class="menu menu-horizontal px-1">
+                    {# {{ path('app_bank_accounts') }}#}
+                    <li>
+                        <a href="" class="text-lg flex items-center gap-2">
+                            <i class="fas fa-credit-card text-lg"></i>
+                            Mes Comptes
+                        </a>
+                    </li>
+                    <li>
+                        <a href="" class="text-lg flex items-center gap-2">
+                            <i class="fas fa-cog text-lg"></i>
+                            Paramètres
+                        </a>
+                    </li>
+                </ul>
+                <div class="flex items-center gap-2">
+                    <!-- Bouton de notification -->
+                    <div class="dropdown dropdown-end">
+                        <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+                            <div class="indicator">
+                                <i class="fas fa-bell text-lg"></i>
+                                <span class="badge badge-sm indicator-item">3</span>
+                            </div>
+                        </div>
+                        <div tabindex="0" class="mt-3 z-[1] card card-compact dropdown-content w-80 bg-base-100 shadow">
+                            <div class="card-body">
+                                <span class="font-bold text-lg">3 Notifications</span>
+                                <div class="divider my-0"></div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center gap-2">
+                                        <div class="avatar">
+                                            <div class="w-8 rounded-full">
+                                                <img src="https://placehold.co/100x100" alt="avatar" />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm">Nouvelle transaction sur votre compte</p>
+                                            <p class="text-xs opacity-50">Il y a 5 minutes</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <div class="avatar">
+                                            <div class="w-8 rounded-full">
+                                                <img src="https://placehold.co/100x100" alt="avatar" />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm">Votre budget mensuel a été dépassé</p>
+                                            <p class="text-xs opacity-50">Il y a 1 heure</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <div class="avatar">
+                                            <div class="w-8 rounded-full">
+                                                <img src="https://placehold.co/100x100" alt="avatar" />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm">Nouvelle mise à jour de l'application</p>
+                                            <p class="text-xs opacity-50">Il y a 2 heures</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-actions">
+                                    <button class="btn btn-primary btn-block">Voir toutes les notifications</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Dropdown utilisateur -->
+                    <div class="dropdown dropdown-end">
+                        <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+                            <div class="w-10 rounded-full">
+                                <img src="https://placehold.co/100x100" alt="avatar" />
+                            </div>
+                        </div>
+                        <ul tabindex="0" class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52">
+                            {# {{ path('app_user_profile') }} #}
+                            <li><a href="#" class="flex items-center gap-2"><i class="fas fa-user"></i> Mon Profil</a></li>
+                            {# {{ path('app_logout') }} #}
+                            <li><a href="" class="text-error flex items-center gap-2"><i class="fas fa-sign-out-alt"></i> Se déconnecter</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% block body %}{% endblock %}
+    </body>
+</html>
