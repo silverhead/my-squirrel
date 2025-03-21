@@ -1,4 +1,7 @@
 import './bootstrap.js';
+
+import './vendor/daisyui/daisyui.index.js';
+
 /*
  * Welcome to your app's main JavaScript file!
  *

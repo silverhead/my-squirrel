@@ -16,13 +16,20 @@ return [
         'path' => './assets/app.js',
         'entrypoint' => true,
     ],
-    '@hotwired/stimulus' => [
-        'version' => '3.2.2',
-    ],
     '@symfony/stimulus-bundle' => [
         'path' => './vendor/symfony/stimulus-bundle/assets/dist/loader.js',
     ],
+    '@hotwired/stimulus' => [
+        'version' => '3.2.2',
+    ],
     '@hotwired/turbo' => [
-        'version' => '7.3.0',
+        'version' => '8.0.13',
+    ],
+    'daisyui' => [
+        'version' => '5.0.4',
+    ],
+    'daisyui/daisyui.min.css' => [
+        'version' => '5.0.4',
+        'type' => 'css',
     ],
 ];
