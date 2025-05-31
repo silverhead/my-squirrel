@@ -82,11 +82,11 @@ cache-clear: ## cache clear
 ##@ Quality tests commands
 
 php-cs-fixer-dry: ## php-cs-fixer : scan code to check PHP Coding standards issues (without fix)
-	$(DOCKER_EXEC_APP) tools/php-cs-fixer/$(BIN_VENDOR)/php-cs-fixer fix src --dry-run
+	$(DOCKER_EXEC_APP) tools/php-cs-fixer/$(BIN_VENDOR)/php-cs-fixer fix src --dry-run --verbose --config=tools/.php-cs-fixer.php
 .PHONY: php-cs-fixer-dry
 
 php-cs-fixer: ## php-cs-fixer : scan code to check PHP Coding standards issues (auto fix issues)
-	$(DOCKER_EXEC_APP) tools/php-cs-fixer/$(BIN_VENDOR)/php-cs-fixer fix src
+	$(DOCKER_EXEC_APP) tools/php-cs-fixer/$(BIN_VENDOR)/php-cs-fixer fix src --verbose --config=tools/.php-cs-fixer.php
 .PHONY: php-cs-fixer
 
 phpstan: ## phpstan : scan code to check code to find obvious bugs & tricky bugs
