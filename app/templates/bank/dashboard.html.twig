@@ -1,0 +1,185 @@
+{% extends 'base_connected.html.twig' %}
+
+{% block title %}Tableau de bord bancaire{% endblock %}
+
+{% block body %}
+<div class="container mx-auto p-4">
+    <h1 class="text-3xl font-bold mb-6">Tableau de bord bancaire</h1>
+    
+    <!-- Résumé des comptes -->
+    <div class="stats shadow w-full mb-8">
+        <div class="stat">
+            <div class="stat-title">Solde total</div>
+            <div class="stat-value text-primary">12 345,67 €</div>
+            <div class="stat-desc">↗︎ 2% depuis le mois dernier</div>
+        </div>
+        
+        <div class="stat">
+            <div class="stat-title">Comptes actifs</div>
+            <div class="stat-value">4</div>
+            <div class="stat-desc">Compte courant, Épargne, Livret A, PEL</div>
+        </div>
+        
+        <div class="stat">
+            <div class="stat-title">Transactions récentes</div>
+            <div class="stat-value">23</div>
+            <div class="stat-desc">↘︎ 7% depuis la semaine dernière</div>
+        </div>
+    </div>
+    
+    <!-- Actions rapides -->
+    <div class="flex flex-wrap gap-4 mb-8">
+        <button class="btn btn-primary">Nouveau virement</button>
+        <button class="btn btn-outline">Ajouter un compte</button>
+        <button class="btn btn-outline">Gérer les bénéficiaires</button>
+        <button class="btn btn-outline">Télécharger un relevé</button>
+    </div>
+    
+    <!-- Comptes bancaires -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4">Mes comptes</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Compte courant -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title flex justify-between items-center">
+                        Compte Courant
+                        <div class="badge badge-primary">Principal</div>
+                    </h3>
+                    <p class="text-gray-600">FR76 3000 1007 0400 0000 0000 123</p>
+                    <div class="text-2xl font-bold">2 450,00 €</div>
+                    <div class="card-actions justify-end">
+                        <button class="btn btn-sm">Détails</button>
+                        <button class="btn btn-sm btn-primary">Opérations</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Compte épargne -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title">Livret A</h3>
+                    <p class="text-gray-600">FR76 3000 1007 0400 0000 0000 456</p>
+                    <div class="text-2xl font-bold">7 345,50 €</div>
+                    <div class="card-actions justify-end">
+                        <button class="btn btn-sm">Détails</button>
+                        <button class="btn btn-sm btn-primary">Opérations</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- PEL -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title">PEL</h3>
+                    <p class="text-gray-600">FR76 3000 1007 0400 0000 0000 789</p>
+                    <div class="text-2xl font-bold">12 500,00 €</div>
+                    <div class="card-actions justify-end">
+                        <button class="btn btn-sm">Détails</button>
+                        <button class="btn btn-sm btn-primary">Opérations</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Compte titre -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h3 class="card-title">Compte Titres</h3>
+                    <p class="text-gray-600">FR76 3000 1007 0400 0000 0000 321</p>
+                    <div class="text-2xl font-bold">4 050,17 €</div>
+                    <div class="card-actions justify-end">
+                        <button class="btn btn-sm">Détails</button>
+                        <button class="btn btn-sm btn-primary">Opérations</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dernières transactions -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4">Dernières transactions</h2>
+        <div class="overflow-x-auto">
+            <table class="table table-zebra w-full">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Compte</th>
+                        <th>Montant</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>15/05/2023</td>
+                        <td>Supermarché Casino</td>
+                        <td>Compte Courant</td>
+                        <td class="text-error">-85,42 €</td>
+                        <td><div class="badge badge-success">Effectué</div></td>
+                    </tr>
+                    <tr>
+                        <td>14/05/2023</td>
+                        <td>Virement - Loyer Mai</td>
+                        <td>Compte Courant</td>
+                        <td class="text-error">-750,00 €</td>
+                        <td><div class="badge badge-success">Effectué</div></td>
+                    </tr>
+                    <tr>
+                        <td>12/05/2023</td>
+                        <td>Salaire - Entreprise XYZ</td>
+                        <td>Compte Courant</td>
+                        <td class="text-success">+2 450,00 €</td>
+                        <td><div class="badge badge-success">Effectué</div></td>
+                    </tr>
+                    <tr>
+                        <td>10/05/2023</td>
+                        <td>Retrait DAB</td>
+                        <td>Compte Courant</td>
+                        <td class="text-error">-80,00 €</td>
+                        <td><div class="badge badge-success">Effectué</div></td>
+                    </tr>
+                    <tr>
+                        <td>05/05/2023</td>
+                        <td>Virement vers Livret A</td>
+                        <td>Compte Courant</td>
+                        <td class="text-error">-200,00 €</td>
+                        <td><div class="badge badge-success">Effectué</div></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="flex justify-center mt-4">
+            <button class="btn btn-outline">Voir toutes les transactions</button>
+        </div>
+    </div>
+    
+    <!-- Graphique -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4">Évolution des comptes</h2>
+        <div class="mockup-code bg-neutral text-neutral-content p-6 h-64 flex items-center justify-center">
+            <p class="text-center">Graphique d'évolution des soldes</p>
+            <p class="text-center text-sm">(Intégrer une bibliothèque de graphiques comme Chart.js)</p>
+        </div>
+    </div>
+    
+    <!-- Alertes -->
+    <div class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4">Alertes et notifications</h2>
+        <div class="alert alert-warning mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+            <div>
+                <h3 class="font-bold">Seuil de découvert atteint !</h3>
+                <div class="text-sm">Votre compte courant secondaire approche du seuil de découvert autorisé.</div>
+            </div>
+        </div>
+        <div class="alert alert-info mb-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <div>
+                <h3 class="font-bold">Relevé disponible</h3>
+                <div class="text-sm">Votre relevé du mois d'avril est disponible.</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

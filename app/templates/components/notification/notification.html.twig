@@ -1,0 +1,39 @@
+{% set notifications = [
+    {
+        'message': 'Nouvelle transaction sur votre compte',
+        'time': 'Il y a 5 minutes'
+    },
+    {
+        'message': 'Votre budget mensuel a été dépassé',
+        'time': 'Il y a 1 heure'
+    },
+    {
+        'message': "Nouvelle mise à jour de l'application",
+        'time': 'Il y a 2 heures'
+    }
+] %}
+
+<div class="dropdown dropdown-end">
+    <div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+        <div class="indicator">
+            <i class="fas fa-bell text-lg"></i>
+            <span class="badge badge-sm indicator-item">3</span>
+        </div>
+    </div>
+    <div tabindex="0" class="mt-3 z-[1] card card-compact dropdown-content w-80 bg-base-100 shadow">
+        <div class="card-body">
+            <span class="font-bold text-lg">{{ notifications|length }} Notifications</span>
+            <div class="divider my-0"></div>
+            <div class="space-y-2">
+                {% for notification in notifications %}
+                    {% include 'components/notification/item.html.twig' with { notification: notification } %}
+                {% else %}
+                    <p class="text-center text-sm">Aucune notification</p>
+                {% endfor %}
+            </div>
+            <div class="card-actions">
+                <button class="btn btn-primary btn-block">Voir toutes les notifications</button>
+            </div>
+        </div>
+    </div>
+</div>

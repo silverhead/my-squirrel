@@ -1,0 +1,270 @@
+{% extends 'base_connected.html.twig' %}
+
+{% block title %}Entrées Bancaires{% endblock %}
+
+{% block body %}
+{# Conteneur des toasts avec stack #}
+<div id="toast-container" class="fixed top-4 inset-x-0 mx-auto max-w-[600px] z-50 stack items-center"></div>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col gap-4 mb-8">
+        <div class="flex justify-between items-center">
+            <h1 class="text-3xl font-bold">Entrées Bancaires</h1>
+            <div class="flex gap-2">
+                <button class="btn btn-primary" onclick="toggleFilterForm()">
+                    <i class="fas fa-filter"></i> Filtres
+                </button>
+                <button class="btn btn-secondary" onclick="showToast('Import en cours...', 'info')">
+                    <i class="fas fa-file-import"></i> Importer
+                </button>
+            </div>
+        </div>
+        
+        {# Barre de notifications #}
+        <div class="flex flex-wrap gap-2 justify-center bg-base-200 p-4 rounded-lg">
+            <button class="btn btn-success" onclick="showToast('Opération réussie !', 'success')">
+                <i class="fas fa-check-circle"></i> Notification Succès
+            </button>
+            <button class="btn btn-error" onclick="showToast('Une erreur est survenue.', 'error')">
+                <i class="fas fa-exclamation-circle"></i> Notification Erreur
+            </button>
+            <button class="btn btn-info" onclick="showToast('Information importante.', 'info')">
+                <i class="fas fa-info-circle"></i> Notification Info
+            </button>
+            <button class="btn btn-warning" onclick="showToast('Attention !', 'warning')">
+                <i class="fas fa-exclamation-triangle"></i> Notification Warning
+            </button>
+        </div>
+    </div>
+
+    {# Formulaire de filtrage avec transition #}
+    <div id="filterForm" class="card bg-base-100 shadow-xl mb-8 transition-all duration-300 ease-in-out transform origin-top">
+        <div class="card-body">
+            <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Date début</span>
+                    </label>
+                    <input type="date" name="start_date" class="input input-bordered" value="{{ app.request.query.get('start_date') }}">
+                </div>
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Date fin</span>
+                    </label>
+                    <input type="date" name="end_date" class="input input-bordered input-ghost" value="{{ app.request.query.get('end_date') }}">
+                </div>
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Montant minimum</span>
+                    </label>
+                    <input type="number" name="min_amount" class="input input-bordered" value="{{ app.request.query.get('min_amount') }}">
+                </div>
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Montant maximum</span>
+                    </label>
+                    <input type="number" name="max_amount" class="input input-bordered" value="{{ app.request.query.get('max_amount') }}">
+                </div>
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Description</span>
+                    </label>
+                    <input type="text" name="description" class="input input-bordered" value="{{ app.request.query.get('description') }}">
+                </div>
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Catégorie</span>
+                    </label>
+                    <select name="category" class="select select-bordered">
+                        <option value="">Toutes les catégories</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}" {% if app.request.query.get('category') == category.id %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="md:col-span-3 flex justify-end gap-2">
+                    {# {{ path('app_bank_entry_index') }} #}
+                    <a href="#" class="btn btn-ghost">Réinitialiser</a>
+                    <button type="submit" class="btn btn-primary">Filtrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="flex gap-8">
+        {# Liste des entrées avec animation #}
+        <div class="flex-1 overflow-x-auto">
+            <div class="h-60 sticky top-0 bg-base-100">
+                <table class="table table-pin-rows table-zebra w-full">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Catégorie</th>
+                            <th class="text-right">Montant</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in entries %}
+                            <tr class="transition-all duration-200 hover:bg-base-200">
+                                <td>{{ entry.date|date('d/m/Y') }}</td>
+                                <td>{{ entry.description }}</td>
+                                <td>
+                                    <div class="badge badge-primary">{{ entry.category.name }}</div>
+                                </td>
+                                <td class="text-right {% if entry.amount >= 0 %}text-success{% else %}text-error{% endif %}">
+                                    {{ entry.amount|number_format(2, ',', ' ') }} €
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center">Aucune entrée trouvée</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                {# Pagination #}
+                {% if entries.haveToPaginate is defined and entries.haveToPaginate %}
+                    <div class="flex justify-center mt-8">
+                        {# {{ knp_pagination_render(entries) }} #}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {# Colonne latérale droite #}
+        <div class="w-80 bg-base-200 p-6 rounded-lg">
+            <div class="flex flex-col gap-4 sticky top-4">
+                <h2 class="text-xl font-bold">Résumé par Catégorie</h2>
+                
+                {# Total général #}
+                <div class="stats bg-primary text-primary-content">
+                    <div class="stat">
+                        <div class="stat-title">Total</div>
+                        <div class="stat-value">
+                            {% set total = 0 %}
+                            {% for entry in entries %}
+                                {% set total = total + entry.amount %}
+                            {% endfor %}
+                            {{ total|number_format(2, ',', ' ') }} €
+                        </div>
+                    </div>
+                </div>
+
+                {# Liste des catégories #}
+                <div class="flex flex-col gap-2">
+                    {% set categorySums = {} %}
+                    {% for entry in entries %}
+                        {% set categoryId = entry.category.id %}
+                        {% set categorySums = categorySums|merge({
+                            (categoryId): (categorySums[categoryId] ?? 0) + entry.amount
+                        }) %}
+                    {% endfor %}
+
+                    {% for category in categories %}
+                        {% set amount = categorySums[category.id] ?? 0 %}
+                        <div class="card bg-base-100 shadow-sm">
+                            <div class="card-body p-4">
+                                <div class="flex justify-between items-center">
+                                    <div class="badge badge-primary">{{ category.name }}</div>
+                                    <span class="{% if amount >= 0 %}text-success{% else %}text-error{% endif %} font-bold">
+                                        {{ amount|number_format(2, ',', ' ') }} €
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+<script>
+function toggleFilterForm() {
+    const form = document.getElementById('filterForm');
+    if (form.classList.contains('scale-y-0')) {
+        form.classList.remove('scale-y-0', 'opacity-0', 'h-0');
+        form.classList.add('scale-y-100', 'opacity-100', 'h-auto');
+    } else {
+        form.classList.remove('scale-y-100', 'opacity-100', 'h-auto');
+        form.classList.add('scale-y-0', 'opacity-0', 'h-0');
+    }
+}
+
+// Initialiser l'état du formulaire
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('filterForm');
+    const hasFilters = new URLSearchParams(window.location.search).toString() !== '';
+    if (!hasFilters) {
+        form.classList.add('scale-y-0', 'opacity-0', 'h-0');
+    }
+});
+
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    
+    // Classes de base pour le toast avec animation fade
+    const baseClasses = 'w-full p-4 rounded-lg shadow-lg flex items-center gap-2 transition-all duration-300 opacity-0 -translate-y-full';
+    
+    // Classes spécifiques au type avec DaisyUI 5
+    const typeClasses = {
+        success: 'alert alert-success',
+        warning: 'alert alert-warning',
+        error: 'alert alert-error',
+        info: 'alert alert-info'
+    };
+
+    // Icônes par type
+    const icons = {
+        success: 'fas fa-check-circle',
+        error: 'fas fa-exclamation-circle',
+        info: 'fas fa-info-circle',
+        warning: 'fas fa-exclamation-triangle'
+    };
+    
+    // Appliquer les classes
+    toast.className = `${baseClasses} ${typeClasses[type] || typeClasses.info}`;
+    
+    // Contenu du toast
+    toast.innerHTML = `
+        <i class="${icons[type]} mr-2"></i>
+        <span class="flex-1">${message}</span>
+        <button onclick="dismissToast(this.parentElement)" class="btn btn-ghost btn-sm btn-circle hover:bg-opacity-20">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    // Ajouter le toast au début du conteneur pour l'effet d'empilement
+    container.insertBefore(toast, container.firstChild);
+    
+    // Animation d'entrée
+    requestAnimationFrame(() => {
+        toast.classList.remove('opacity-0', '-translate-y-full');
+    });
+    
+    // Auto-suppression après 3 secondes
+    setTimeout(() => {
+        dismissToast(toast);
+    }, 3000);
+}
+
+function dismissToast(toast) {
+    // Animation de sortie avec fade et translation
+    toast.classList.add('opacity-0', 'translate-y-full');
+    
+    // Supprimer après l'animation
+    setTimeout(() => {
+        if (toast.parentElement) {
+            toast.parentElement.removeChild(toast);
+        }
+    }, 300);
+}
+</script>
+{% endblock %}

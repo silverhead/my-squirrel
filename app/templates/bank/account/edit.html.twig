@@ -1,0 +1,100 @@
+{% extends 'base_connected.html.twig' %}
+
+{% block title %}Modifier un compte{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex items-center mb-8">
+        <a href="{{ path('app_bank_account_index') }}" class="btn btn-circle btn-ghost mr-4">
+            <i class="fas fa-arrow-left text-lg"></i>
+        </a>
+        <h1 class="text-3xl font-bold">Modifier un compte bancaire</h1>
+    </div>
+
+    <div class="card bg-base-100 shadow-xl max-w-3xl mx-auto">
+        <div class="card-body">
+            <form method="post" class="space-y-6" enctype="multipart/form-data">
+                {# Champ caché pour l'ID #}
+                <input type="hidden" name="id" value="{{ id }}">
+                
+                {# Nom de la banque #}
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text font-medium">Banque</span>
+                    </label>
+                    <input type="text" name="bank" placeholder="Nom de la banque" class="input input-bordered w-full" value="Caisse d'Épargne" required>
+                </div>
+                
+                {# Nom du compte #}
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text font-medium">Nom du compte</span>
+                    </label>
+                    <input type="text" name="name" placeholder="Nom du compte" class="input input-bordered w-full" value="Compte Courant" required>
+                </div>
+                
+                {# Solde #}
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text font-medium">Solde (€)</span>
+                    </label>
+                    <input type="number" name="balance" placeholder="0.00" step="0.01" class="input input-bordered w-full" value="2547.89" required>
+                </div>
+                
+                {# Upload d'icône #}
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text font-medium">Logo de la banque</span>
+                    </label>
+                    <input type="file" name="icon_file" accept="image/*" class="file-input file-input-bordered w-full" />
+                    <label class="label">
+                        <span class="label-text-alt text-gray-500">Formats acceptés : JPG, PNG, SVG (max 2 Mo)</span>
+                    </label>
+                </div>
+                
+                {# Champ caché pour conserver l'URL actuelle de l'icône #}
+                <input type="hidden" name="current_icon" value="https://storage.googleapis.com/endurance-apps-liip/media/cache/theming_no_filter_grid_fs/56680f8a9b3e9da5978b47d7">
+                
+                {# Aperçu de l'icône #}
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-medium">Aperçu de l'icône</span>
+                    </label>
+                    <div class="bg-gray-100 p-4 rounded-box flex justify-center">
+                        <img id="icon-preview" src="https://storage.googleapis.com/endurance-apps-liip/media/cache/theming_no_filter_grid_fs/56680f8a9b3e9da5978b47d7" alt="Aperçu" class="h-20 object-contain">
+                    </div>
+                </div>
+                
+                {# Boutons d'action #}
+                <div class="flex justify-end space-x-4 mt-8">
+                    <a href="{{ path('app_bank_account_index') }}" class="btn btn-outline">Annuler</a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save mr-2"></i>
+                        Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Script pour mettre à jour l'aperçu de l'icône en temps réel
+    document.addEventListener('DOMContentLoaded', function() {
+        const iconInput = document.querySelector('input[name="icon_file"]');
+        const iconPreview = document.getElementById('icon-preview');
+        
+        iconInput.addEventListener('change', function() {
+            if (iconInput.files && iconInput.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    iconPreview.src = e.target.result;
+                };
+                
+                reader.readAsDataURL(iconInput.files[0]);
+            }
+        });
+    });
+</script>
+{% endblock %}
