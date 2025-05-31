@@ -1,0 +1,27 @@
+{% extends 'base_connected.html.twig' %}
+
+{% block title %}Tableau de bord bancaire{% endblock %}
+
+{% block body %}
+<!-- Contenu principal -->
+<div class="container mx-auto p-4">
+    <h1 class="text-3xl font-bold mb-6">Tableau de bord bancaire</h1>
+    
+    <!-- Widgets de résumé -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        {% for widget in widgets %}
+            {% include 'bank/dashboard/_widget.html.twig' with { widget: widget } %}
+        {% endfor %}
+    </div>
+
+    <!-- Graphiques -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="md:col-span-2">
+            {% include 'bank/dashboard/_chart.html.twig' with { chart: charts[0] } %}
+        </div>
+        <div>
+            {% include 'bank/dashboard/_chart.html.twig' with { chart: charts[1] } %}
+        </div>
+    </div>
+</div>
+{% endblock %}

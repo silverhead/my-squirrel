@@ -1,0 +1,9 @@
+<div class="card {{ widget.bgColor }} {{ widget.textColor }} shadow-xl hover:-translate-y-1 transition-transform">
+    <div class="card-body">
+        <h2 class="card-title">{{ widget.title }}</h2>
+        <p class="text-3xl font-bold">{{ widget.amount | number_format(2, ',', '.') }} €</p>
+        <p class="text-sm opacity-80">
+            {{ widget.percentage > 0 ? '+' : '' }}{{ widget.percentage }}% ce mois
+        </p>
+    </div>
+</div>

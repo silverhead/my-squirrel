@@ -1,0 +1,29 @@
+<div class="navbar bg-base-100 shadow-lg">
+    <div class="flex-1">
+        {# {{ path('app_bank_dashboard') }} #}
+        <a href="" class="btn btn-ghost text-xl">MySquirrel</a>
+    </div>
+    <div class="flex flex-row justify-between">
+        <ul class="menu menu-horizontal px-1">
+            {# {{ path('app_bank_accounts') }}#}
+            <li>
+                <a href="" class="text-lg flex items-center gap-2">
+                    <i class="fas fa-credit-card text-lg"></i>
+                    Mes Comptes
+                </a>
+            </li>
+            <li>
+                <a href="" class="text-lg flex items-center gap-2">
+                    <i class="fas fa-cog text-lg"></i>
+                    Paramètres
+                </a>
+            </li>
+        </ul>
+        <div class="flex items-center gap-2">
+            <!-- Bouton de notification -->
+            {% include 'components/notification/notification.html.twig' %}
+            <!-- Dropdown utilisateur -->
+            {% include 'components/dropdown/user.html.twig' %}
+        </div>
+    </div>
+</div>

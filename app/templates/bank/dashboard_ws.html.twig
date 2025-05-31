@@ -1,0 +1,193 @@
+{% extends 'base_connected.html.twig' %}
+
+{% block title %}Tableau de bord bancaire{% endblock %}
+
+{% block body %}
+<!-- Contenu principal -->
+<div class="container mx-auto p-4">
+    <!-- En-tête avec actions -->
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Tableau de bord bancaire</h1>
+        <div class="join mt-4 md:mt-0">
+            <button class="btn btn-primary join-item">Ajouter un compte</button>
+            <div class="dropdown dropdown-end">
+                <div tabindex="0" role="button" class="btn join-item">Actions <i class="fa-solid fa-chevron-down ml-2"></i></div>
+                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a>Exporter les données</a></li>
+                    <li><a>Importer des transactions</a></li>
+                    <li><a>Paramètres</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Widgets de résumé -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        {% for widget in widgets %}
+            {% include 'bank/dashboard/_widget.html.twig' with { widget: widget } %}
+        {% endfor %}
+    </div>
+
+    <!-- Section principale avec onglets -->
+    <div class="tabs tabs-lifted mb-4">
+        <a class="tab tab-active">Vue d'ensemble</a>
+        <a class="tab">Comptes</a>
+        <a class="tab">Budget</a>
+        <a class="tab">Objectifs</a>
+    </div>
+
+    <!-- Contenu principal avec graphiques et tableaux -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <!-- Graphiques (colonne gauche et milieu) -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Graphique principal -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <div class="flex justify-between items-center">
+                        <h2 class="card-title">Évolution du solde</h2>
+                        <select class="select select-sm select-bordered w-auto">
+                            <option>30 derniers jours</option>
+                            <option>3 derniers mois</option>
+                            <option>6 derniers mois</option>
+                            <option>Cette année</option>
+                        </select>
+                    </div>
+                    <div class="h-[300px]">
+                        {% if charts[0] is defined %}
+                            {{ render_chart(charts[0].chart) }}
+                        {% else %}
+                            <div class="flex items-center justify-center h-full">
+                                <p class="text-gray-500">Aucune donnée disponible</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transactions récentes -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <div class="flex justify-between items-center">
+                        <h2 class="card-title">Transactions récentes</h2>
+                        <a href="#" class="link link-primary">Voir tout</a>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="table table-zebra">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Compte</th>
+                                    <th>Catégorie</th>
+                                    <th class="text-right">Montant</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for i in 1..5 %}
+                                <tr class="hover">
+                                    <td>{{ 'now'|date_modify('-' ~ i ~ ' day')|date('d/m/Y') }}</td>
+                                    <td>Transaction #{{ i }}</td>
+                                    <td>Compte principal</td>
+                                    <td>
+                                        <div class="badge badge-outline">Alimentation</div>
+                                    </td>
+                                    <td class="text-right font-medium {% if i is odd %} text-error {% else %} text-success {% endif %}">
+                                        {% if i is odd %}-{% else %}+{% endif %}{{ (random(1, 100) * 10)|number_format(2, ',', '.') }} €
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Colonne droite -->
+        <div class="space-y-6">
+            <!-- Répartition des dépenses -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title">Répartition des dépenses</h2>
+                    <div class="h-[250px]">
+                        {% if charts[1] is defined %}
+                            {{ render_chart(charts[1].chart) }}
+                        {% else %}
+                            <div class="flex items-center justify-center h-full">
+                                <p class="text-gray-500">Aucune donnée disponible</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Liste des comptes -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <div class="flex justify-between items-center">
+                        <h2 class="card-title">Mes comptes</h2>
+                        <a href="#" class="link link-primary">Gérer</a>
+                    </div>
+                    <div class="space-y-3">
+                        {% for i in 1..3 %}
+                        <div class="flex justify-between items-center p-3 bg-base-200 rounded-lg hover:bg-base-300 transition-all cursor-pointer">
+                            <div>
+                                <h3 class="font-medium">Compte {% if i == 1 %}courant{% elseif i == 2 %}épargne{% else %}joint{% endif %}</h3>
+                                <p class="text-xs opacity-70">**** {{ 1000 + i * 1111 }}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-bold">{{ (random(1000, 10000) * i)|number_format(2, ',', '.') }} €</p>
+                                <div class="badge badge-sm {% if i == 1 %}badge-primary{% elseif i == 2 %}badge-success{% else %}badge-secondary{% endif %}">{{ i == 1 ? 'Principal' : (i == 2 ? 'Épargne' : 'Partagé') }}</div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Objectifs d'épargne -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <div class="flex justify-between items-center">
+                        <h2 class="card-title">Objectifs d'épargne</h2>
+                        <button class="btn btn-sm btn-ghost">+</button>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>Vacances d'été</span>
+                                <span class="text-sm">1 500 € / 3 000 €</span>
+                            </div>
+                            <progress class="progress progress-success" value="50" max="100"></progress>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span>Achat immobilier</span>
+                                <span class="text-sm">15 000 € / 50 000 €</span>
+                            </div>
+                            <progress class="progress progress-primary" value="30" max="100"></progress>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rappels et alertes -->
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <h2 class="card-title">Rappels et alertes</h2>
+                    <div class="space-y-2">
+                        <div class="alert alert-warning">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                            <span>Prélèvement assurance dans 3 jours</span>
+                        </div>
+                        <div class="alert alert-info">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <span>Mise à jour des relevés disponible</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
